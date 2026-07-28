@@ -1,18 +1,17 @@
 import { test as base } from '@playwright/test';
-import { HomePage } from '../../src/pages/home.page';
+import { RestfulBookerApi } from '../../src/api/restful-booker.api';
 
 type TestFixtures = {
-  homePage: HomePage;
+  restfulBookerApi: RestfulBookerApi;
 };
 
 /**
- * Fixtures personalizados que extienden el test base de Playwright.
- * Inyecta Page Objects listos para usar en cada test.
+ * Fixture personalizado que inyecta el cliente de API de Restful Booker.
  */
 export const test = base.extend<TestFixtures>({
-  homePage: async ({ page }, use) => {
-    const homePage = new HomePage(page);
-    await use(homePage);
+  restfulBookerApi: async ({ request }, use) => {
+    const api = new RestfulBookerApi(request);
+    await use(api);
   },
 });
 
