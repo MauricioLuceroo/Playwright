@@ -1,113 +1,131 @@
-# Playwright + TypeScript — Automatización de API
+# Playwright + TypeScript — Portfolio de pruebas de API
 
-Este proyecto está preparado para automatizar pruebas de API con Playwright y TypeScript, usando la API de Restful Booker como ejemplo.
+Este proyecto muestra un ejemplo completo de automatización de pruebas de API con Playwright y TypeScript. Está pensado como una base sólida para portfolio porque combina buenas prácticas de organización, reutilización de código, configuración de entorno y reportes ejecutables.
 
-## ¿Qué hace este proyecto?
+![alt text](portfolio-playwright.png)
 
-Permite ejecutar pruebas HTTP de forma organizada, reutilizando:
-- clientes de API
-- datos de prueba
-- variables de entorno
-- fixtures de Playwright
+## Qué se implementó
+
+Se desarrolló una suite de pruebas API contra Restful Booker que cubre:
+
+- verificación de salud del servicio
+- autenticación con token
+- creación de reservas
+- búsqueda de reservas por listado y filtros
+- actualización de reservas
+- eliminación de reservas
+
+La automatización está organizada para que los test queden legibles, reutilizables y fáciles de escalar.
+
+## Qué se hizo en la configuración
+
+La configuración principal está en [playwright.config.ts](playwright.config.ts). Allí se define:
+
+- el directorio de tests: [tests](tests)
+- ejecución en 3 navegadores: Chromium, Firefox y WebKit
+- reportes HTML y por consola
+- timeouts de navegación y espera
+- la URL base del proyecto
+
+También se usa una configuración especial en [tests/pruebas-api/prueba-api-restful-booker.spec.ts](tests/pruebas-api/prueba-api-restful-booker.spec.ts) para ejecutar ciertos casos de forma serial, lo que ayuda a mantener el estado entre pruebas como login, creación, actualización y borrado.
 
 ## Estructura del proyecto
 
 ```text
 Playwright-TypeScript/
 ├── src/
-│   ├── api/                         # Clientes y clases para consumir APIs
-│   │   └── restful-booker.api.ts   # Ejemplo de cliente para Restful Booker
-│   ├── config/                     # Configuración del entorno
-│   │   └── env.config.ts           # Lee .env y expone variables tipadas
-│   ├── data/                       # Datos de prueba reutilizables
-│   │   └── booking-data.ts         # Payloads, datos de reserva, etc.
-│   └── utils/                      # Helpers reutilizables
-│       └── helpers.ts              # Funciones auxiliares como wait, screenshots, IDs
+│   ├── configuracion/         # Variables de entorno y configuración
+│   ├── datos/                 # Datos reutilizables para las pruebas
+│   ├── servicios/             # Cliente y lógica de consumo de API
+│   └── utilidades/            # Helpers auxiliares
 ├── tests/
-│   ├── api/                        # Tests de API
-│   │   └── restful-booker.api.spec.ts
-│   └── fixtures/                   # Fixtures personalizados de Playwright
-│       └── test.fixture.ts         # Inyecta el cliente API en los tests
-├── .env.example                    # Plantilla de variables de entorno
-├── package.json                     # Scripts y dependencias
-├── playwright.config.ts             # Configuración general de Playwright
-├── tsconfig.json                    # Configuración de TypeScript
-└── README.md                        # Esta guía
+│   ├── pruebas-api/           # Casos de prueba de API
+│   └── recursos/              # Fixtures personalizados
+├── informe-playwright/        # Reporte HTML generado por Playwright
+├── playwright.config.ts       # Configuración general del runner
+├── package.json               # Scripts y dependencias
+└── README.md                  # Documentación del proyecto
 ```
 
-## ¿Qué va en cada carpeta?
+## Organización del proyecto
 
-### src/api
-Aquí van las clases que consumen endpoints HTTP.
+- [src/servicios](src/servicios): encapsulan la comunicación con la API mediante métodos como login, crear reserva, actualizar reserva o eliminar reserva.
+- [src/configuracion](src/configuracion): centraliza variables de entorno como la URL base y credenciales.
+- [src/datos](src/datos): guarda payloads y datos de prueba reutilizables.
+- [tests/pruebas-api](tests/pruebas-api): contiene los escenarios de negocio automatizados.
+- [tests/recursos](tests/recursos): define fixtures para inyectar el cliente API en los tests.
 
-Ejemplo:
-- crear métodos como `healthCheck()`, `login()` o `createBooking()`
-- encapsular la lógica de la API para que los tests queden limpios
+## Dónde se corren los tests
 
-### src/config
-Aquí van los valores de entorno y la configuración que usa el proyecto.
+Los tests se ejecutan desde la raíz del proyecto, en la carpeta principal del repositorio.
 
-Ejemplo:
-- `BASE_URL`
-- `RESTFUL_BOOKER_BASE_URL`
-- `TEST_USER`
-- `TEST_PASSWORD`
+## Comandos importantes
 
-### src/data
-Aquí van los datos que se reutilizan en los tests.
+Instalación:
 
-Ejemplo:
-- payloads de reserva
-- usuarios de prueba
-- fechas
-- datos estáticos
+```bash
+npm install
+```
 
-### src/utils
-Aquí van funciones auxiliares que no son tests pero sí ayudan en el flujo.
+Crear el archivo de entorno si corresponde:
 
-Ejemplo:
-- generar IDs únicos
-- esperar tiempos cortos
-- capturas de pantalla
+```bash
+cp .env.example .env
+```
 
-### tests/api
-Aquí van los tests que llaman endpoints HTTP.
+Ejecutar toda la suite:
 
-Ejemplo:
-- validar que un endpoint responde 200 o 201
-- crear reservas
-- autenticar usuarios
+```bash
+npm test
+```
 
-### tests/fixtures
-Aquí van los fixtures personalizados que inyectan objetos reutilizables en los tests.
+Ejecutar solo las pruebas de API:
 
-Ejemplo:
-- un fixture `restfulBookerApi` para usar directamente en los tests
+```bash
+npm run test:api
+```
 
-## Flujo de una prueba de API
+Ejecutar en un navegador específico:
 
-1. El test vive en `tests/api/`.
-2. El fixture inyecta el cliente API desde `src/api/`.
-3. El cliente usa los datos de `src/data/` y las variables de `src/config/`.
-4. Playwright ejecuta la prueba y valida la respuesta HTTP.
+```bash
+npx playwright test --project=chromium
+```
 
-## Configuración inicial
+Ejecutar con un solo worker (útil en Windows o para depurar):
 
-1. Copia `.env.example` a `.env`
-2. Ajusta las variables según el entorno que quieras usar
-3. Instala dependencias con `npm install`
-4. Ejecuta los tests con:
-   - `npm run test:api`
+```powershell
+./node_modules/.bin/playwright.cmd test --workers=1
+```
 
-## Scripts útiles
+Ver el reporte HTML generado:
 
-| Comando | Descripción |
-|---------|-------------|
-| `npm test` | Ejecuta todas las pruebas |
-| `npm run test:api` | Ejecuta solo las pruebas de API |
-| `npm run test:headed` | Ejecuta las pruebas con navegador visible |
-| `npm run typecheck` | Verifica que el código TypeScript no tenga errores |
+```bash
+npx playwright show-report informe-playwright
+```
 
-## Notas
+Verificar tipado de TypeScript:
 
-Este proyecto está pensado para empezar con API testing de forma simple y escalable. Si más adelante quieres agregar UI, puedes incorporar una carpeta nueva para eso sin romper la estructura actual.
+```bash
+npm run typecheck
+```
+
+## Reporte generado
+
+El reporte HTML queda disponible en [informe-playwright/index.html](informe-playwright/index.html). Esto permite revisar la ejecución de los tests de forma visual y compartir resultados de manera profesional.
+
+Si alguien quiere verlo sin abrirlo manualmente, también puede ejecutarlo con:
+
+```bash
+npx playwright show-report informe-playwright
+```
+
+Así se levanta una vista del reporte en el navegador directamente desde el proyecto.
+
+## Resultado esperado
+
+Este proyecto demuestra capacidad para:
+
+- automatizar pruebas de API con Playwright
+- trabajar con servicios REST reales
+- estructurar proyectos para mantenerlos escalables
+- generar evidencia visual de ejecución para portfolio
