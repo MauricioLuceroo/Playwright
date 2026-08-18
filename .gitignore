@@ -4,8 +4,8 @@ dist/
 .env.local
 
 # Playwright
-informe-playwright/
-resultados-pruebas/
+playwright-report/
+test-results/
 blob-report/
 playwright/.cache/
 

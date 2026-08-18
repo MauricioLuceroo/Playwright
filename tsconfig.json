@@ -9,17 +9,17 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
-    "ignoreDeprecations": "6.0",
+    "ignoreDeprecations": "5.0",
     "noEmit": true,
     "baseUrl": ".",
     "paths": {
-      "@servicios/*": ["src/servicios/*"],
-      "@utilidades/*": ["src/utilidades/*"],
-      "@configuracion/*": ["src/configuracion/*"],
-      "@datos/*": ["src/datos/*"],
-      "@recursos/*": ["tests/recursos/*"]
+      "@config/*": ["src/config/*"],
+      "@data/*": ["src/data/*"],
+      "@service/*": ["src/service/*"],
+      "@fixtures/*": ["tests/fixtures/*"],
+      "@utils/*": ["tests/utils/*"]
     }
   },
   "include": ["src/**/*", "tests/**/*", "playwright.config.ts"],
-  "exclude": ["node_modules", "informe-playwright", "resultados-pruebas"]
+  "exclude": ["node_modules", "playwright-report", "test-results"]
 }

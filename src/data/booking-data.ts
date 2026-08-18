@@ -1,6 +1,6 @@
-import { entorno } from '../configuracion/entorno.config';
+import { env } from '../config/environment.config';
 
-export type ReservaPayload = {
+export type BookingPayload = {
   firstname: string;
   lastname: string;
   totalprice: number;
@@ -12,7 +12,7 @@ export type ReservaPayload = {
   additionalneeds: string;
 };
 
-export function construirCargaReserva(): ReservaPayload {
+export function buildBookingPayload(): BookingPayload {
   return {
     firstname: 'Jim',
     lastname: 'Brown',
@@ -25,7 +25,8 @@ export function construirCargaReserva(): ReservaPayload {
     additionalneeds: 'Breakfast',
   };
 }
-export function actualizarDatosReserva(): ReservaPayload {
+
+export function buildUpdatedBookingPayload(): BookingPayload {
   return {
     firstname: 'Juan Manuel',
     lastname: 'Brown',
@@ -39,13 +40,12 @@ export function actualizarDatosReserva(): ReservaPayload {
   };
 }
 
-export const datosAuthValida = {
-  username: entorno.usuarioPrueba,
-  password: entorno.contrasenaPrueba,
+export const validAuthData = {
+  username: env.testUser,
+  password: env.testPassword,
 };
 
-// Payload con credenciales incorrectas (para probar un caso negativo después)
-export const datosAuthInvalida = {
-  username: 'usuario_falso',
-  password: 'password_incorrecto',
+export const invalidAuthData = {
+  username: 'invalid_user',
+  password: 'invalid_password',
 };
